@@ -97,13 +97,13 @@ void setup()
 
   // ESPSoftwareSerial does not like repeated .begin's without a .end in between.
   // We need to .begin and .end the laraSerial port here, before the myLARA.begin, to set up the pin numbers etc.
-  // E.g. to use: 57600 baud; 8 databits, no parity, 1 stop bit; RXD on pin 33; TXD on pin 32; no inversion.
+  // E.g. to use: 115200 baud; 8 databits, no parity, 1 stop bit; RXD on pin 33; TXD on pin 32; no inversion.
   Serial.println(F("Configuring SoftwareSerial laraSerial"));
-  laraSerial.begin(57600, SWSERIAL_8N1, 33, 32, false);
+  laraSerial.begin(115200, SWSERIAL_8N1, 33, 32, false);
   laraSerial.end();
 
   // Initialize the LARA
-  if (myLARA.begin(laraSerial, 57600) )
+  if (myLARA.begin(laraSerial, 115200) )
   {
     Serial.println(F("LARA-R6 connected!"));
   }

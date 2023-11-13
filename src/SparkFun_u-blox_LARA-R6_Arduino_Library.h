@@ -226,11 +226,10 @@ const char ASCII_ESC = 0x1B;
 const unsigned long LARA_R6_SUPPORTED_BAUD[NUM_SUPPORTED_BAUD] =
     {
         115200,
-        9600,
-        19200,
-        38400,
-        57600,
-        230400};
+        230400,
+        460800,
+        921600,
+        3000000};
 #define LARA_R6_DEFAULT_BAUD_RATE 115200
 
 // Flow control definitions for AT&K

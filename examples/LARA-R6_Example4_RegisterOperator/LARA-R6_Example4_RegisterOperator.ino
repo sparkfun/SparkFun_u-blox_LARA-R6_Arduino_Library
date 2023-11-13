@@ -170,7 +170,7 @@ void setup()
   myLARA.invertPowerPin(true); 
 
   // Initialize the LARA
-  if (myLARA.begin(laraSerial, 9600) )
+  if (myLARA.begin(laraSerial, 115200) )
   {
     Serial.println(F("LARA-R6 connected!"));
   }
