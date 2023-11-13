@@ -132,11 +132,8 @@ const char LARA_R6_FLOW_CONTROL[] = "&K";   // Flow control
 const char LARA_R6_COMMAND_BAUD[] = "+IPR"; // Baud rate
 // ### Packet switched data services
 const char LARA_R6_MESSAGE_PDP_DEF[] = "+CGDCONT";            // Packet switched Data Profile context definition
-const char LARA_R6_MESSAGE_PDP_CONFIG[] = "+UPSD";            // Packet switched Data Profile configuration
-const char LARA_R6_MESSAGE_PDP_ACTION[] = "+UPSDA";           // Perform the action for the specified PSD profile
 const char LARA_R6_MESSAGE_PDP_CONTEXT_ACTIVATE[] = "+CGACT"; // Activates or deactivates the specified PDP context
 const char LARA_R6_MESSAGE_ENTER_PPP[] = "D";
-const char LARA_R6_NETWORK_ASSIGNED_DATA[] = "+UPSND";        // Packet switched network-assigned data
 // ### GPIO
 const char LARA_R6_COMMAND_GPIO[] = "+UGPIOC"; // GPIO Configuration
 // ### IP
@@ -172,9 +169,6 @@ const char LARA_R6_GNSS_POWER[] = "+UGPS";                   // GNSS power manag
 const char LARA_R6_GNSS_ASSISTED_IND[] = "+UGIND";           // Assisted GNSS unsolicited indication
 const char LARA_R6_GNSS_REQUEST_LOCATION[] = "+ULOC";        // Ask for localization information
 const char LARA_R6_GNSS_GPRMC[] = "+UGRMC";                  // Ask for localization information
-const char LARA_R6_GNSS_REQUEST_TIME[] = "+UTIME";           // Ask for time information from cellular modem (CellTime)
-const char LARA_R6_GNSS_TIME_INDICATION[] = "+UTIMEIND";     // Time information request status unsolicited indication
-const char LARA_R6_GNSS_TIME_CONFIGURATION[] = "+UTIMECFG";  // Sets time configuration
 const char LARA_R6_GNSS_CONFIGURE_SENSOR[] = "+ULOCGNSS";    // Configure GNSS sensor
 const char LARA_R6_GNSS_CONFIGURE_LOCATION[] = "+ULOCCELL";  // Configure cellular location sensor (CellLocate®)
 const char LARA_R6_AIDING_SERVER_CONFIGURATION[] = "+UGSRV"; // Configure aiding server (CellLocate®)
@@ -198,7 +192,6 @@ const char LARA_R6_LISTEN_SOCKET_URC[] = "+UUSOLI:";
 const char LARA_R6_CLOSE_SOCKET_URC[] = "+UUSOCL:";
 const char LARA_R6_GNSS_REQUEST_LOCATION_URC[] = "+UULOC:";
 const char LARA_R6_SIM_STATE_URC[] = "+UUSIMSTAT:";
-const char LARA_R6_MESSAGE_PDP_ACTION_URC[] = "+UUPSDA:";
 const char LARA_R6_HTTP_COMMAND_URC[] = "+UUHTTPCR:";
 const char LARA_R6_MQTT_COMMAND_URC[] = "+UUMQTTC:";
 const char LARA_R6_PING_COMMAND_URC[] = "+UUPING:";
@@ -393,27 +386,6 @@ typedef enum
 
 typedef enum
 {
-  LARA_R6_UTIME_MODE_STOP = 0,
-  LARA_R6_UTIME_MODE_PPS,
-  LARA_R6_UTIME_MODE_ONE_SHOT,
-  LARA_R6_UTIME_MODE_EXT_INT
-} LARA_R6_utime_mode_t;
-
-typedef enum
-{
-  LARA_R6_UTIME_SENSOR_NONE = 0,
-  LARA_R6_UTIME_SENSOR_GNSS_LTE = 1,
-  LARA_R6_UTIME_SENSOR_LTE
-} LARA_R6_utime_sensor_t;
-
-typedef enum
-{
-  LARA_R6_UTIME_URC_CONFIGURATION_DISABLED = 0,
-  LARA_R6_UTIME_URC_CONFIGURATION_ENABLED
-} LARA_R6_utime_urc_configuration_t;
-
-typedef enum
-{
   LARA_R6_SIM_NOT_PRESENT = 0,
   LARA_R6_SIM_PIN_NEEDED,
   LARA_R6_SIM_PIN_BLOCKED,
@@ -537,38 +509,6 @@ typedef enum
   LARA_R6_FTP_COMMAND_LS,
   LARA_R6_FTP_COMMAND_GET_FOTA_FILE = 100
 } LARA_R6_ftp_command_opcode_t;
-
-typedef enum
-{
-  LARA_R6_PSD_CONFIG_PARAM_PROTOCOL = 0,
-  LARA_R6_PSD_CONFIG_PARAM_APN,
-  //LARA_R6_PSD_CONFIG_PARAM_USERNAME, // Not allowed on LARA-R6
-  //LARA_R6_PSD_CONFIG_PARAM_PASSWORD, // Not allowed on LARA-R6
-  LARA_R6_PSD_CONFIG_PARAM_DNS1 = 4,
-  LARA_R6_PSD_CONFIG_PARAM_DNS2,
-  //LARA_R6_PSD_CONFIG_PARAM_AUTHENTICATION, // Not allowed on LARA-R6
-  //LARA_R6_PSD_CONFIG_PARAM_IP_ADDRESS, // Not allowed on LARA-R6
-  //LARA_R6_PSD_CONFIG_PARAM_DATA_COMPRESSION, // Not allowed on LARA-R6
-  //LARA_R6_PSD_CONFIG_PARAM_HEADER_COMPRESSION, // Not allowed on LARA-R6
-  LARA_R6_PSD_CONFIG_PARAM_MAP_TO_CID = 100
-} LARA_R6_pdp_configuration_parameter_t;
-
-typedef enum
-{
-  LARA_R6_PSD_PROTOCOL_IPV4 = 0,
-  LARA_R6_PSD_PROTOCOL_IPV6,
-  LARA_R6_PSD_PROTOCOL_IPV4V6_V4_PREF,
-  LARA_R6_PSD_PROTOCOL_IPV4V6_V6_PREF
-} LARA_R6_pdp_protocol_type_t;
-
-typedef enum
-{
-  LARA_R6_PSD_ACTION_RESET = 0,
-  LARA_R6_PSD_ACTION_STORE,
-  LARA_R6_PSD_ACTION_LOAD,
-  LARA_R6_PSD_ACTION_ACTIVATE,
-  LARA_R6_PSD_ACTION_DEACTIVATE
-} LARA_R6_pdp_actions_t;
 
 typedef enum
 {
@@ -728,12 +668,6 @@ public:
                             uint8_t h, uint8_t min, uint8_t s, int8_t tz); // TZ can be +/- and is in increments of 15 minutes. -28 == 7 hours behind UTC/GMT
   void autoTimeZoneForBegin(bool enable = true); // Call autoTimeZoneForBegin(false) _before_ .begin if you want to disable the automatic time zone
   LARA_R6_error_t autoTimeZone(bool enable); // Enable/disable automatic time zone adjustment
-  LARA_R6_error_t setUtimeMode(LARA_R6_utime_mode_t mode = LARA_R6_UTIME_MODE_PPS, LARA_R6_utime_sensor_t sensor = LARA_R6_UTIME_SENSOR_GNSS_LTE); // Time mode, source etc. (+UTIME)
-  LARA_R6_error_t getUtimeMode(LARA_R6_utime_mode_t *mode, LARA_R6_utime_sensor_t *sensor);
-  LARA_R6_error_t setUtimeIndication(LARA_R6_utime_urc_configuration_t config = LARA_R6_UTIME_URC_CONFIGURATION_ENABLED); // +UTIMEIND
-  LARA_R6_error_t getUtimeIndication(LARA_R6_utime_urc_configuration_t *config);
-  LARA_R6_error_t setUtimeConfiguration(int32_t offsetNanoseconds = 0, int32_t offsetSeconds = 0); // +UTIMECFG
-  LARA_R6_error_t getUtimeConfiguration(int32_t *offsetNanoseconds, int32_t *offsetSeconds);
 
   // Network service AT commands
   int8_t rssi(void); // Receive signal strength
@@ -953,13 +887,7 @@ public:
 
   // Packet Switched Data
   // Configure the PDP using +UPSD. See LARA_R6_pdp_configuration_parameter_t for the list of parameters: protocol, APN, username, DNS, etc.
-  LARA_R6_error_t setPDPconfiguration(int profile, LARA_R6_pdp_configuration_parameter_t parameter, int value);                         // Set parameters in the chosen PSD profile
-  LARA_R6_error_t setPDPconfiguration(int profile, LARA_R6_pdp_configuration_parameter_t parameter, LARA_R6_pdp_protocol_type_t value); // Set parameters in the chosen PSD profile
-  LARA_R6_error_t setPDPconfiguration(int profile, LARA_R6_pdp_configuration_parameter_t parameter, String value);                      // Set parameters in the chosen PSD profile
-  LARA_R6_error_t setPDPconfiguration(int profile, LARA_R6_pdp_configuration_parameter_t parameter, IPAddress value);                   // Set parameters in the chosen PSD profile
-  LARA_R6_error_t performPDPaction(int profile, LARA_R6_pdp_actions_t action);  // Performs the requested action for the specified PSD profile: reset, store, load, activate, deactivate
   LARA_R6_error_t activatePDPcontext(bool status, int cid = -1);                // Activates or deactivates the specified PDP context. Default to all (cid = -1)
-  LARA_R6_error_t getNetworkAssignedIPAddress(int profile, IPAddress *address); // Get the dynamic IP address assigned during PDP context activation
 
   // GPS
   typedef enum
